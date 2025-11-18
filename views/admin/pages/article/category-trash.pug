@@ -1,0 +1,53 @@
+extends ../../layouts/default.pug
+
+block main
+    .row
+        .col-12
+        .card
+            .card-header
+            .row.align-items-center
+                .col
+                    h4.card-title #{pageTitle}
+                // end col
+                .col-auto
+                    
+            // end row
+            // end card-header
+            .card-body.pt-0
+            //- Table
+            .card
+                .card-body.pt-0
+                    .table-responsive-sm
+                    table.table.mb-0.table-centered.text-center
+                        thead.table-light
+                            tr
+                                th STT
+                                th Tên danh mục
+                                th Lượt xem
+                            
+                                th.text-end Hành động
+                        tbody
+                            each item,index in categoryList
+                                tr
+                                    td #{index+1}
+                                    td #{item.name}
+                                    td #{item.view}
+                                    td
+                                        a(
+                                            href="#javascript"
+                                            button-api
+                                            method="PATCH"
+                                            data-api=`${prefixAdmin}/article/category/recovery/${item.id}`
+                                        ).fa-solid.fa-rotate-left.me-1
+
+                                        a(
+                                            href="#javascript"
+                                            button-api
+                                            method="DELETE"
+                                            data-api=`${prefixAdmin}/article/category/destroy/${item.id}`
+                                        ).fa-solid.fa-trash
+                                        
+                    // end /table
+                    // end /tableresponsive
+                // end card-body
+        // end col

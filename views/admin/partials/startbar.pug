@@ -1,0 +1,80 @@
+.startbar.d-print-none
+    // start brand
+    .brand
+      a.logo(href=`${prefixAdmin}/dashboard`)
+        span
+          img.logo-sm(
+            alt="logo-small" 
+            src=`${prefixAdmin}/assets/images/logo-sm.png`
+            )
+        span
+          img.logo-lg.logo-light(
+            alt="logo-large" 
+            src=`${prefixAdmin}/assets/images/logo-light.png`
+            )
+          img.logo-lg.logo-dark(
+            alt="logo-large" 
+            src=`${prefixAdmin}/assets/images/logo-dark.png`
+            )
+    // end brand
+    // start startbar-menu
+    .startbar-menu
+      #startbarCollapse.startbar-collapse(data-simplebar="")
+        .d-flex.align-items-start.flex-column.w-100
+          // Navigation
+          ul.navbar-nav.mb-auto.w-100
+            li.menu-label.pt-0.mt-0
+              span Main Menu
+            li.nav-item
+              a.nav-link(
+                aria-controls="sidebarDashboards" 
+                aria-expanded="false" 
+                role="button" 
+                data-bs-toggle="collapse" 
+                href="#sidebarDashboards"
+                )
+                i.iconoir-home-simple.menu-icon
+                span Dashboards
+              #sidebarDashboards.collapse
+                ul.nav.flex-column
+                  li.nav-item
+                    a.nav-link(href="index.html") Analytics
+                  // end nav-item
+                  li.nav-item
+                    a.nav-link(href="ecommerce-index.html") Ecommerce
+                  // end nav-item
+                // end nav
+              // end startbarDashboards
+            // end nav-item
+            li.nav-item
+              a.nav-link(
+                aria-controls="sidebarArticle" 
+                aria-expanded="false" 
+                role="button" 
+                data-bs-toggle="collapse" 
+                href="#sidebarArticle"
+                )
+                i.iconoir-view-grid.menu-icon
+                span Bài viết
+              #sidebarArticle.collapse
+                ul.nav.flex-column
+                  li.nav-item
+                    a.nav-link(href=`${prefixAdmin}/article/create`) Tạo mới bài viết
+                  // end nav-item
+                  li.nav-item
+                    a.nav-link(href=`${prefixAdmin}/article/list`) Danh sách bài viết
+                  // end nav-item
+                  li.nav-item
+                    a.nav-link(href=`${prefixAdmin}/article/category`) Danh mục bài viết
+                  // end nav-item
+                // end nav
+              
+            li.nav-item
+              a.nav-link(
+                role="button" 
+                href=`${prefixAdmin}/file`
+              )
+                i.iconoir-multiple-pages.menu-icon
+                span Files
+  
+.startbar-overlay.d-print-none

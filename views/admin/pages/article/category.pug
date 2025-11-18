@@ -1,0 +1,77 @@
+extends ../../layouts/default.pug
+include ../../mixin/pagination.pug
+block main
+    .row
+        .col-12
+        .card
+            .card-header
+            .row.align-items-center
+                .col
+                    h4.card-title #{pageTitle}
+                // end col
+                .col-auto
+                    a.btn.btn-primary.me-1(
+                        href=`${prefixAdmin}/article/category/create`
+                        )
+                        i.fa-solid.fa-plus.me-1
+                        | Tạo danh mục
+                    a.btn.btn-danger(
+                        href=`${prefixAdmin}/article/category/trash`
+                        )
+                        i.fa-solid.fa-trash.me-1
+                        | Thùng rác
+            // end row
+            // end card-header
+            .card-body.pt-0
+
+
+            //- Table
+            .card
+                .card-body.pt-0
+                    .row
+                        .col-lg-6
+                            form.input-group.mb-3(form-search)
+                                input.form-control(
+                                placeholder="Từ khóa..."
+                                type="text"
+                                name="keyword"
+                                )
+                                button.btn.btn-secondary Tìm kiếm
+                    .table-responsive-sm
+                        table.table.mb-0.table-centered.text-center
+                            thead.table-light
+                                tr
+                                    th STT
+                                    th Tên danh mục
+                                    th Lượt xem
+                                    th Trạng thái
+                                    th Hành động
+                            tbody
+                                if(categoryList.length > 0)
+                                    each item,index in categoryList
+                                        tr
+                                            td #{index+1}
+                                            td #{item.name}
+                                            td #{item.view}
+                                            if (item.status == "active")
+                                                td
+                                                    span.badge.bg-success Đang hoạt động
+                                            
+                                            if (item.status == "inactive")
+                                                td
+                                                    span.badge.bg-danger Dừng hoạt động
+                                            td
+                                                a(
+                                                    href="#javascript"
+                                                    button-api
+                                                    method="PATCH"
+                                                    data-api=`${prefixAdmin}/article/category/delete/${item.id}`
+                                                ).iconoir-trash
+                                                a(href=`${prefixAdmin}/article/category/edit/${item.id}`).iconoir-edit-pencil
+                                else
+                                    tr
+                                        td(colspan="6" class="text-center") Không có dữ liệu
+                        //--Pagination---//
+                    +pagination(pagination)
+                    
+                                

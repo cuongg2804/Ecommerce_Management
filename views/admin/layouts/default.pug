@@ -1,0 +1,102 @@
+doctype html
+html(
+  data-bs-theme="light" 
+  data-startbar="light" 
+  dir="ltr" 
+  lang="en"
+  )
+  script.
+      const pathAdmin = "#{prefixAdmin}";
+  head
+    meta(charset="utf-8")
+    title Rizz | Rizz - Admin & Dashboard Template
+    meta(
+      content="width=device-width, initial-scale=1, shrink-to-fit=no" 
+      name="viewport"
+      )
+    meta(
+      name="description" 
+      content="Premium Multipurpose Admin & Dashboard Template"
+      )
+    meta(
+      name="author" 
+      content=""
+      )
+    meta(
+      content="IE=edge" 
+      http-equiv="X-UA-Compatible"
+      )
+    // App favicon
+    link(
+      href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"
+    )
+    link(href="https://releases.transloadit.com/uppy/v4.18.2/uppy.min.css" rel="stylesheet")
+    link(
+      type="text/css" 
+      rel="stylesheet" 
+      href="/admin/assets/css/main.css"
+    )
+    link(href="https://cdn.jsdelivr.net/npm/sweetalert2@11.23.0/dist/sweetalert2.min.css" rel="stylesheet")
+    link(
+      rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    )
+    link(
+      href="/admin/assets/images/favicon.ico" 
+      rel="shortcut icon"
+      )
+    link(
+      href="/admin/assets/libs/jsvectormap/css/jsvectormap.min.css" 
+      rel="stylesheet"
+      )
+    // App css
+    link(
+      type="text/css" 
+      rel="stylesheet" 
+      href="/admin/assets/css/bootstrap.min.css"
+      )
+    link(
+      type="text/css" 
+      rel="stylesheet" 
+      href="/admin/assets/css/icons.min.css"
+      )
+    link(
+      type="text/css" 
+      rel="stylesheet" 
+      href="/admin/assets/css/app.min.css"
+      )
+  body
+    // Top Bar Start
+    include ../partials/topbar.pug
+    // Top Bar End
+
+    // leftbar-tab-menu
+    include ../partials/startbar.pug
+    // end leftbar-tab-menu /
+
+    .page-wrapper
+      // Page Content
+      .page-content
+        .container-xxl
+            block main
+        //Start Footer
+        include ../partials/footer.pug
+        //End footer
+        // end page content
+    // end page-wrapper
+    // Javascript
+
+  
+    script(src="https://cdn.jsdelivr.net/npm/sweetalert2@11.23.0/dist/sweetalert2.all.min.js")
+    script(src="https://cdn.tiny.cloud/1/mv92x1jwo82rytn7figibb1ubv830165ep3zr6w7xlkwtals/tinymce/8/tinymce.min.js" referrerpolicy="origin" crossorigin="anonymous")
+    script(src="https://code.jquery.com/jquery-3.6.0.min.js")
+    script(src="/admin/assets/libs/bootstrap/js/bootstrap.bundle.min.js")
+    script(src="/admin/assets/libs/simplebar/simplebar.min.js")
+    script(type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js")
+    script(src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js")
+    //-just-validate
+    script(src="https://unpkg.com/just-validate@latest/dist/just-validate.production.min.js")
+    script(src="/admin/assets/data/stock-prices.js")
+    script(src="/admin/assets/libs/jsvectormap/js/jsvectormap.min.js")
+    block script
+    script(src="/admin/assets/js/app.js")
+    script(src="/admin/assets/js/main.js")
