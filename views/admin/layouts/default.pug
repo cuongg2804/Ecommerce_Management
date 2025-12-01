@@ -7,6 +7,8 @@ html(
   )
   script.
       const pathAdmin = "#{prefixAdmin}";
+      const domainCDN = "#{domainCDN}";
+      
   head
     meta(charset="utf-8")
     title Rizz | Rizz - Admin & Dashboard Template
@@ -63,7 +65,7 @@ html(
       type="text/css" 
       rel="stylesheet" 
       href="/admin/assets/css/app.min.css"
-      )
+    )
   body
     // Top Bar Start
     include ../partials/topbar.pug
@@ -85,7 +87,7 @@ html(
     // end page-wrapper
     // Javascript
 
-  
+    include ../partials/file-manager.pug
     script(src="https://cdn.jsdelivr.net/npm/sweetalert2@11.23.0/dist/sweetalert2.all.min.js")
     script(src="https://cdn.tiny.cloud/1/mv92x1jwo82rytn7figibb1ubv830165ep3zr6w7xlkwtals/tinymce/8/tinymce.min.js" referrerpolicy="origin" crossorigin="anonymous")
     script(src="https://code.jquery.com/jquery-3.6.0.min.js")

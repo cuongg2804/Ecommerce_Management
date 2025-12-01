@@ -7,3 +7,4 @@ mixin options(list, level = 0, parentId = "")
       ) #{prefix}#{item.name} 
     if(item.children && item.children.length > 0)
       +options(item.children, level + 1,parentId)
+      

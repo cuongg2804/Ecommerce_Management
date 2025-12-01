@@ -1,3 +1,64 @@
 .just-validate-error-label{
   width: 100%;
 }
+.preview-file {
+  margin-top: 12px;
+}
+
+/* Ô khung viền riêng cho ảnh */
+.preview-image-box {
+  width: 160px;
+  height: 160px;
+  border: 2px dashed #b9b9b9;
+  border-radius: 10px;
+  background: #fafafa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: .25s ease;
+}
+
+/* Hover hiệu ứng đẹp */
+.preview-image-box:hover {
+  border-color: #7bb8ff;
+  background: #f2f8ff;
+}
+
+/* Ảnh bên trong khung */
+.preview-image-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 8px;
+}
+
+
+/* checkbox-list */
+.checkbox-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #f0f0f0;
+  padding: 10px;
+  border-radius: 6.4px;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.checkbox-item input {
+  width: 15px;
+  height: 15px;
+}
+
+.checkbox-item label {
+  font-size: 13px;
+  cursor: pointer;
+}
+/* End checkbox-list */

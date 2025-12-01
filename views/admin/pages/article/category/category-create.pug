@@ -1,19 +1,19 @@
-extends ../../layouts/default.pug
-include ../../mixin/options.pug
+extends ../../../layouts/default.pug
+include ../../../mixin/options.pug
+include ../../../mixin/form-group-file.pug
 block main
-
-    .row.justify-content-center
-        .col-md-6.col-lg-6
-            .card
-                .card-header
-                    .row.align-items-center
-                        .col
-                            h4.card-title #{pageTitle}
-                        // end col
-                    // end row
-                // end card-header
-                .card-body.pt-0
-                    form(id="category-create")
+    .card
+        .card-header
+            .row.align-items-center
+                .col
+                    h4.card-title #{pageTitle}
+                // end col
+            // end row
+        // end card-header
+        .card-body.pt-0
+            form(id="category-create")
+                .row
+                    .col-md-6.col-lg-6
                         .mb-3
                             label.form-label(for="name") Tên danh mục*
                             input.form-control(
@@ -22,20 +22,28 @@ block main
                                 name="name"
                                 id="name"
                             )
+                    .col-md-6.col-lg-6
                         .mb-3
                             .input-group.mb-3
-                                button#inputGroupFileAddon03.btn.btn-outline-primary(
-                                    type="button" 
-                                    generateSlug="CategoryBlog"
-                                    from="name"
-                                    to="slug"
-                                ) Tự động
-                                input(class="form-control" id="slug" name="slug")
+                                label.form-label(for="slug") Đường dẫn *
+                                .input-group
+                                    button#inputGroupFileAddon03.btn.btn-outline-primary(
+                                        type="button" 
+                                        generateSlug="CategoryBlog"
+                                        from="name"
+                                        to="slug"
+                                    ) Tự động
+                                    input(class="form-control" id="slug" name="slug")
+                    .col-md-6.col-lg-6
                         .mb-3
                             label.form-label(for="parent") Danh mục cha
-                            select.form-select(id="parent" name="parent" class="js-example-basic-multiple")
+                            select.form-select(id="parent" name="parent")
                                 option(value="") Chọn danh mục
                                 +options(categoryTree)
+                    .col-md-6.col-lg-6
+                        .mb-3
+                            +form-group-file("Avatar","avatar")     
+                    .col-md-6.col-lg-6            
                         .mb-3
                             label.form-label(for="status") Trạng thái
                             div.d-flex
@@ -46,7 +54,8 @@ block main
                                     input.me-2(type="radio" name="status" value="inactive")
                                     | Ngừng hoạt động
 
-   
+
+                    .col-md-12.col-lg-12
                         .mb-3
                             label.form-label(for="description") Mô tả
                             textarea.form-control(
@@ -55,7 +64,11 @@ block main
                                 placeholder="Nhập mô tả" 
                                 type="text"
                             )
-                        button.btn.btn-primary.m-1(type="submit") Submit
-                        a.btn.btn-danger(type="button" href=`${prefixAdmin}/article/category`) Cancel
+                button.btn.btn-primary.m-1(type="submit") Submit
+                a.btn.btn-danger(type="button" href=`${prefixAdmin}/article/category`) Cancel
                 // end card-body
             // end card
+
+
+                                    
+                

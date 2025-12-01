@@ -1,10 +1,62 @@
 import { Request, Response } from "express";
 import CategoryBlog from "../../models/category-blog";
+import Blog from "../../models/blog";
 import { categoryBlogTree } from "../../helpers/category.helper";
 import slugify from "slugify";
 import { date } from "joi";
 import { PaginationHelper } from "../../helpers/pagination.helper";
 
+// [GET] /admin/article/create
+export const articleCreate = async (req : Request, res: Response) => {
+
+    const categoryList = await CategoryBlog.find({});
+    const categoryTree = categoryBlogTree(categoryList);
+  
+    res.render("admin/pages/article/create",{
+        pageTitle: "Tạo mới bài viết",
+        categoryList: categoryList,
+        categoryTree: categoryTree
+    });
+}
+
+// [POST] /admin/article/create
+export const articleCreatePost = async (req : Request, res: Response) => {
+    try {
+        
+        const existSlug = await Blog.findOne({
+            slug: req.body.slug
+        })
+        
+        if(existSlug) {
+            res.send({
+                code: "error",
+                message : 'Đường dẫn đã tồn tại!'
+            }); 
+            return;
+        }
+        req.body.search = slugify(req.body.name, {
+            lower: true,
+            replacement: " "
+        })
+        req.body.category = JSON.parse(req.body.category);
+
+        if(req.body.status == "published"){
+            req.body.publishAt = new Date();
+        }
+
+        const newBlog = new Blog(req.body);
+        await newBlog.save();
+        res.json({
+            code: "success",
+            message: "Tạo mới bài viết thành công"
+        })
+    } catch (error) {
+        res.json({
+            code: "error",
+            message: "Tạo mới bài viết thất bại"
+        })
+    }
+}
 // [GET] /admin/article/category
 export const category = async (req : Request, res: Response) => {
     const find : {
@@ -37,7 +89,7 @@ export const category = async (req : Request, res: Response) => {
                                     createdAt: "desc"
                                 })
     
-    res.render("admin/pages/article/category",{
+    res.render("admin/pages/article/category/category",{
         pageTitle: "Quản lý danh mục",
         categoryList : categoryList,
         pagination: pagination
@@ -49,7 +101,7 @@ export const categoryCreate = async (req : Request, res: Response) => {
     const categoryList = await CategoryBlog.find({});
     const categoryTree = categoryBlogTree(categoryList);
   
-    res.render("admin/pages/article/category-create.pug",{
+    res.render("admin/pages/article/category/category-create.pug",{
         pageTitle: "Tạo mới danh mục",
         categoryList: categoryList,
         categoryTree: categoryTree
@@ -101,7 +153,7 @@ export const categoryEdit = async (req: Request, res: Response) =>{
     const category = await CategoryBlog.findOne({
         _id : id
     })
-    res.render("admin/pages/article/category-edit",{
+    res.render("admin/pages/article/category/category-edit",{
         pageTitle: "Quản lý danh mục",
         categoryTree : categoryTree,
         category : category
@@ -109,7 +161,6 @@ export const categoryEdit = async (req: Request, res: Response) =>{
 }
 
 // [PATCH] /admin/article/category/edit/:id
-
 export const categoryEditPatch = async (req: Request, res: Response) =>{
     try{
         const existSlug = await CategoryBlog.findOne({
@@ -178,7 +229,7 @@ export const categoryTrash = async (req: Request, res: Response) =>{
     })
 
     const categoryList = await CategoryBlog.find(find)
-    res.render("admin/pages/article/category-trash",{
+    res.render("admin/pages/article/category/category-trash",{
         pageTitle: "Thùng rác danh mục",
         categoryList : categoryList
     });

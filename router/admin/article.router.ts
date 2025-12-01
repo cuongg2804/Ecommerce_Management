@@ -5,6 +5,13 @@ const upload = multer();
 import * as controller from "../../controller/admin/article.controller";
 import * as validates from "../../validates/admin/article.validate";
 
+
+// [GET] /admin/article/create
+router.get("/create",controller.articleCreate);
+
+// [POST] /admin/article/create
+router.post("/create",upload.none(), validates.validatesArticle,controller.articleCreatePost);
+
 // [GET] /admin/article/category
 router.get("/category",controller.category);
 

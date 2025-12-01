@@ -8,7 +8,7 @@ import { PaginationHelper } from '../../helpers/pagination.helper';
 import { domainCDN } from '../../config/systemConfig';
 import path from 'path';
 
-export const iframe = async (req: Request, res: Response) =>{
+export const index = async (req: Request, res: Response) =>{
   const find:{folder?: string} = {};
 
   let folderPath = "media";
@@ -53,7 +53,7 @@ export const iframe = async (req: Request, res: Response) =>{
   });
 }
 
-export const index =  async (req: Request, res: Response) =>{
+export const iframe =  async (req: Request, res: Response) =>{
   res.render("admin/pages/file/index",{
      pageTitle: "Quản lý file"
   })

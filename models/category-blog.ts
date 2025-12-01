@@ -6,6 +6,7 @@ const schema = new mongoose.Schema(
     name: String,
     parent: String,
     slug: String,
+    avatar: String,
     status: {
       type: String,
       enum: ["active",  "inactive"],

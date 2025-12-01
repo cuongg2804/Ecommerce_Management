@@ -57,14 +57,15 @@ if(ArticleCategoryForm){
       const parent = event.target.parent.value;
       const description = tinymce.get("description").getContent();
       const status = event.target.status.value;
+      const avatar = event.target.avatar.value;
       const formData = new FormData()
       formData.append("name", name);
       formData.append("slug", slug);
       formData.append("parent", parent);
       formData.append("description", description);
       formData.append("status", status);
-      
-
+      formData.append("avatar", avatar);
+     
       fetch(`${pathAdmin}/article/category/create`,{
         method: "POST",
         body: formData
@@ -92,7 +93,6 @@ if(ArticleCategoryForm){
 
 // generateSlug
 const btnGenerateSlug = document.querySelector("[generateSlug]");
-
 if(btnGenerateSlug){
   btnGenerateSlug.addEventListener("click", () => {
     const modelName = btnGenerateSlug.getAttribute("generateSlug");
@@ -125,7 +125,7 @@ if(btnGenerateSlug){
         
 
         if(data.type =="error"){
-          showToast(data.message, data.code);
+          showToast(data.message, "error");
         }
     })
   })
@@ -166,6 +166,7 @@ if(formArticleCategoryEdit){
     const slug = event.target.slug.value;
     const status = event.target.status.value;
     const parent = event.target.parent.value;
+    const avatar = event.target.avatar.value;
     const description = tinymce.get("description").getContent();
     
     const formData = new FormData();
@@ -173,6 +174,7 @@ if(formArticleCategoryEdit){
     formData.append("slug",slug);
     formData.append("status",status);
     formData.append("parent",parent);
+    formData.append("avatar",avatar);
     formData.append("description",description);
 
     fetch(`${pathAdmin}/article/category/edit/${id}`,{
@@ -609,3 +611,94 @@ if(listBtnDelFolder.length > 0) {
   })
 }
 //End Delete Folder
+
+const formGroupFile = document.querySelector("[form-group-file]");
+if(formGroupFile){
+  
+  const input = formGroupFile.querySelector("[input-file]");
+  const previewFile = document.querySelector("[preview-file]");
+
+  input.addEventListener("input",() => {
+    const value = input.value;
+    previewFile.querySelector("img").src =`${domainCDN}${value}`;
+  })
+
+  if(input.value){
+     const value = input.value;
+    previewFile.querySelector("img").src =`${domainCDN}${value}`;
+  }
+}
+
+//CheckBox_List
+const getCheckBoxList = (name) => {
+  const checkboxList = document.querySelector(`[checkbox-list="${name}"]`);
+  const inputList = checkboxList.querySelectorAll(`input[type="checkbox"]:checked`);
+  const idList = [];
+  inputList.forEach(input =>{
+    const id = input.value;
+    if(id){
+      idList.push(id)
+    }
+  })
+  return idList;
+}
+
+
+//ArticleFormCreate
+const ArticleFormCreate = document.querySelector('#article-create');
+
+if(ArticleFormCreate){
+  const validation = new JustValidate('#article-create');
+  validation
+  .addField('#name', [
+    {
+      rule: 'required',
+      errorMessage: 'Vui lòng nhập tên danh mục'
+    }
+  ])
+  .addField('#slug', [
+    {
+      rule: 'required',
+      errorMessage: 'Vui lòng nhập đường dẫn'
+    }
+  ])
+  .onSuccess(( event ) => {
+      const name = event.target.name.value;
+      const slug = event.target.slug.value;
+      const category = getCheckBoxList("category");
+      const description = tinymce.get("description").getContent();
+      const status = event.target.status.value;
+      const avatar = event.target.avatar.value;
+      const content = tinymce.get("content").getContent();
+      const formData = new FormData()
+      formData.append("name", name);
+      formData.append("slug", slug);
+      formData.append("content", content);
+      formData.append("description", description);
+      formData.append("status", status);
+      formData.append("avatar", avatar);
+      formData.append("category", JSON.stringify(category));
+    
+      fetch(`${pathAdmin}/article/create`,{
+        method: "POST",
+        body: formData
+      })
+      .then(res => res.json())
+      .then(data => {
+        if(data.code =="success"){
+          drawToast(data.message, data.code);
+          window.location.reload();
+        }
+
+        if(data.code =="error"){
+          showToast(data.message, data.code);
+        }
+      })
+  });
+  $(document).ready(function() {
+    const $selectFind = $("#category-create .js-example-basic-multiple");
+    if ($selectFind.length) {
+      $selectFind.select2();
+    }
+  });
+}

@@ -1,0 +1,88 @@
+extends ../../../layouts/default.pug
+include ../../../mixin/options.pug
+include ../../../mixin/form-group-file.pug
+block main
+    .card
+        .card-header
+            .row.align-items-center
+                .col
+                    h4.card-title #{pageTitle}
+                // end col
+            // end row
+        // end card-header
+        .card-body.pt-0
+            form(id="formArticleCategoryEdit")
+                .row
+                    input.form-control(
+                            hidden
+                            type="text"
+                            name="id"
+                            id="id"
+                            value = category.id
+                    )
+                    .col-md-6.col-lg-6
+                        .mb-3
+                            label.form-label(for="name") Tên danh mục*
+                            input.form-control(
+                                placeholder="Nhập tên danh mục"  
+                                type="text"
+                                name="name"
+                                id="name"
+                                value = category.name
+                            ) 
+                    .col-md-6.col-lg-6
+                        .mb-3
+                            .input-group.mb-3
+                                label.form-label(for="slug") Đường dẫn *
+                                .input-group
+                                    button#inputGroupFileAddon03.btn.btn-outline-primary(
+                                        type="button" 
+                                        generateSlug="CategoryBlog"
+                                        from="name"
+                                        to="slug"
+                                        
+                                    ) Tự động
+                                    input(class="form-control" id="slug" name="slug" value=category.slug)
+                    .col-md-6.col-lg-6
+                        .mb-3
+                            label.form-label(for="parent") Danh mục cha
+                            select.form-select(id="parent" name="parent" class="js-example-basic-multiple")
+                                option(value="") Chọn danh mục
+                                +options(categoryTree,0,category.parent)
+                    .col-md-6.col-lg-6
+                        .mb-3
+                            +form-group-file("Avatar","avatar",category.avatar)  
+                    .col-md-6.col-lg-6
+                        .mb-3
+                            label.form-label(for="status") Trạng thái
+                            div.d-flex
+                                label.me-3
+                                    input.me-2(
+                                        type="radio" 
+                                        name="status" 
+                                        value="active"
+                                        checked = (category.status == "active" ? true : false)
+                                        )
+                                    | Hoạt động
+                                label
+                                    input.me-2(
+                                        type="radio" 
+                                        name="status" 
+                                        value="inactive"
+                                        checked= (category.status == "inactive" ? true : false)
+                                        )
+                                    | Ngừng hoạt động
+
+                    .col-md-12.col-lg-12
+                        .mb-3
+                            label.form-label(for="description") Mô tả
+                            textarea.form-control(
+                                name="description" 
+                                id="description"
+                                placeholder="Nhập mô tả" 
+                                type="text"
+                            ) #{category.description}
+                button.btn.btn-primary(type="submit") Submit
+                a.btn.btn-danger(type="button" href=`${prefixAdmin}/article/category`) Cancel
+        // end card-body
+    // end card

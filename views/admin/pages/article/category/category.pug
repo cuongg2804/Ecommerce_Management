@@ -1,5 +1,5 @@
-extends ../../layouts/default.pug
-include ../../mixin/pagination.pug
+extends ../../../layouts/default.pug
+include ../../../mixin/pagination.pug
 block main
     .row
         .col-12
@@ -42,6 +42,7 @@ block main
                             thead.table-light
                                 tr
                                     th STT
+                                    th Hình ảnh
                                     th Tên danh mục
                                     th Lượt xem
                                     th Trạng thái
@@ -51,6 +52,8 @@ block main
                                     each item,index in categoryList
                                         tr
                                             td #{index+1}
+                                            td 
+                                                img(class="thumb-lg rounded " src=`${domainCDN}${item.avatar}` alt="Ảnh lỗi")
                                             td #{item.name}
                                             td #{item.view}
                                             if (item.status == "active")
