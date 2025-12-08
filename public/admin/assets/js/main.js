@@ -1,4 +1,3 @@
-//const { URLSearchParams } = require("url");
 
 const showToast = (message, type) => {
     let background = "linear-gradient(to right, #00b09b, #96c93d)"; // default success
@@ -137,7 +136,17 @@ const initialTinyMCE = () => {
   tinymce.init({
     selector: 'textarea',
     plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
-    toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+    toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat | image',
+    init_instance_callback: (editor) => {
+      editor.on("OpenWindow", () => {
+        const title = document.querySelector(".tox .tox-dialog__title")?.innerHTML;
+        if(title == "Insert/Edit Media" || title == "Insert/Edit Image") {
+          const inputSource = document.querySelector(`.tox input.tox-textfield[type="url"]`);
+          inputSource.value = domainCDN;
+        }
+      })
+    }
+
   });
 }
 initialTinyMCE();
@@ -204,7 +213,7 @@ if(buttonApi.length > 0) {
       const method = button.getAttribute("method");
       const dataApi = button.getAttribute("data-api");
 
-      if(method == "DELETE"){
+      if(method == "DELETE" || method == "PATCH"){
         Swal.fire({
           title: "Bạn có chắc chắn muốn xóa?",
           text: "Bản ghi sẽ không thể khôi phục!",
@@ -646,7 +655,6 @@ const getCheckBoxList = (name) => {
 
 //ArticleFormCreate
 const ArticleFormCreate = document.querySelector('#article-create');
-
 if(ArticleFormCreate){
   const validation = new JustValidate('#article-create');
   validation
@@ -702,3 +710,252 @@ if(ArticleFormCreate){
     }
   });
 }
+// End  ArticleFormCreate
+
+//ArticleFormEdit
+const formArticleEdit = document.querySelector("#articleEditForm");
+if(formArticleEdit){
+  const validation = new JustValidate("#articleEditForm");
+
+  validation.addField("#name", [
+    {
+      rule: 'required',
+      errorMessage:"Vui lòng nhập tên danh mục!"
+    }
+  ])
+  .addField("#slug", [
+    {
+      rule: 'required',
+      errorMessage:"Vui lòng nhập đường dẫn"
+    }
+  ])
+  .onSuccess((event) =>{
+    const id = event.target.id.value;
+    const name = event.target.name.value;
+    const slug = event.target.slug.value;
+    const status = event.target.status.value;
+    const avatar = event.target.avatar.value;
+    const category = getCheckBoxList("category");
+    const description = tinymce.get("description").getContent();
+    const content = tinymce.get("content").getContent();
+    const formData = new FormData();
+    formData.append("name",name);
+    formData.append("slug",slug);
+    formData.append("status",status);
+    formData.append("category",JSON.stringify(category));
+    formData.append("avatar",avatar);
+    formData.append("description",description);
+    formData.append("content",content);
+    fetch(`${pathAdmin}/article/edit/${id}`,{
+      method: "PATCH",
+      body: formData
+    })
+    .then(res => res.json())
+    .then(data =>{
+      if(data.code =="success"){
+          drawToast(data.message, data.code);
+          window.location.reload();
+        }
+
+        if(data.code =="error"){
+          showToast(data.message, data.code);
+        }
+    })
+  })
+}
+//End ArticleFormEdit
+
+//Button CheckAll
+const buttonCheckAll = document.querySelector("#checkAll")
+if(buttonCheckAll){
+  buttonCheckAll.addEventListener("change", () => {
+    const checked = buttonCheckAll.checked;
+
+    const listCheckBox = document.querySelectorAll("[checkbox-item]")
+    listCheckBox.forEach((box) =>{
+      box.checked = checked
+    })
+  })
+}
+//End ButtonCheckAll
+
+// roleCreateForm
+const roleCreateForm = document.querySelector("#roleCreateForm")
+if(roleCreateForm){
+  const  validation = new JustValidate("#roleCreateForm");
+  validation.addField("#name", [
+    {
+      rule: 'required',
+      errorMessage: 'Vui lòng nhập tên nhóm quyền'
+    }
+  ])
+  .onSuccess(( event ) => {
+    const name = event.target.name.value;
+    const permission = getCheckBoxList("permissions")
+    const description = event.target.description.value;
+    const status = event.target.status.value;
+
+    const formData = new FormData()
+    formData.append("name", name);
+    formData.append("permissions", JSON.stringify(permission));
+    formData.append("status", status);
+    formData.append("description", description);
+
+   
+
+    fetch(`${pathAdmin}/role/create`,{
+        method: "POST",
+        body: formData
+      })
+      .then(res => res.json())
+      .then(data => {
+        if(data.code =="success"){
+          drawToast(data.message, data.code);
+          window.location.reload();
+        }
+
+        if(data.code =="error"){
+          showToast(data.message, data.code);
+        }
+      })
+  })
+}
+//End roleCreateForm
+
+//roleEditForm
+const roleEditForm = document.querySelector("#roleEditForm")
+if(roleEditForm){
+  const  validation = new JustValidate("#roleEditForm");
+  validation.addField("#name", [
+    {
+      rule: 'required',
+      errorMessage: 'Vui lòng nhập tên nhóm quyền'
+    }
+  ])
+  .onSuccess(( event ) => {
+    const name = event.target.name.value;
+    const id = event.target.id.value;
+    const permission = getCheckBoxList("permissions")
+    const description = event.target.description.value;
+    const status = event.target.status.value;
+
+    const formData = new FormData()
+    formData.append("name", name);
+    formData.append("permissions", JSON.stringify(permission));
+    formData.append("status", status);
+    formData.append("description", description);
+
+   
+
+    fetch(`${pathAdmin}/role/edit/${id}`,{
+        method: "PATCH",
+        body: formData
+      })
+      .then(res => res.json())
+      .then(data => {
+        if(data.code =="success"){
+          drawToast(data.message, data.code);
+          window.location.reload();
+        }
+
+        if(data.code =="error"){
+          showToast(data.message, data.code);
+        }
+      })
+  })
+}
+//End roleCreateForm
+
+//accountAdminCreateForm
+const accountAdminCreateForm = document.querySelector("#accountAdminCreateForm")
+if(accountAdminCreateForm){
+  const validation = new JustValidate("#accountAdminCreateForm");
+
+  validation
+    .addField("#fullName",[
+      {
+        rule: "required",
+        errorMessage:"Vui lòng nhập họ tên!"
+      },
+      {
+        rule:"minLength",
+        value: 5,
+        errorMessage: 'Họ tên phải có ít nhất 5 ký tự!'
+      },
+      {
+        rule:"maxLength",
+        value: 30,
+        errorMessage: 'Họ tên không được vượt quá 30 ký tự!'
+      }
+    ])
+    .addField('#email', [
+      {
+        rule: 'required',
+        errorMessage: 'Vui lòng nhập email của bạn!',
+      },
+      {
+        rule: 'email',
+        errorMessage: 'Email không đúng định dạng!',
+      },
+    ])
+    .addField("#password",[
+      {
+        rule: "required",
+        errorMessage: 'Vui lòng nhập mật khẩu!'
+      },
+      {
+        validator: (value) => value.length >= 8,
+        errorMessage: 'Mật khẩu phải chứa ít nhất 8 ký tự'
+      },
+      {
+        validator: (value) => /[A-Z]/.test(value),
+        errorMessage: 'Mật khẩu phải chứa ít nhất một chữ cái in hoa!'
+      },
+      {
+        validator: (value) => /[a-z]/.test(value),
+        errorMessage: 'Mật khẩu phải chứa ít nhất một chữ cái in thường!'
+      },
+      {
+        validator: (value) => /\d/.test(value),
+        errorMessage: 'Mật khẩu phải chứa ít nhất một chữ số!',
+      },
+      {
+        validator: (value) => /[@$!%*?&]/.test(value),
+        errorMessage: 'Mật khẩu phải chứa ít nhất một ký tự đặc biệt!',
+      }
+    ])
+    .onSuccess((event) =>{
+      const fullName = event.target.fullName.value;
+      const email = event.target.email.value;
+      const password = event.target.password.value;
+      const status = event.target.status.value;
+      const avatar = event.target.avatar.value;
+      const roles = getCheckBoxList("roles");
+
+      // Tạo FormData
+      const formData = new FormData();
+      formData.append("fullName", fullName);
+      formData.append("email", email);
+      formData.append("password", password);
+      formData.append("status", status);
+      formData.append("avatar", avatar);
+      formData.append("roles", JSON.stringify(roles));
+      
+      fetch(`${pathAdmin}/account-admin/create`, {
+        method: "POST",
+        body: formData
+      })
+        .then(res => res.json())
+        .then(data => {
+          if(data.code =="success"){
+            drawToast(data.message, data.code);
+            window.location.reload();
+          }
+
+          if(data.code =="error"){
+            showToast(data.message, data.code);
+          }
+        })
+    })
+}
+//End accountAdminCreateForm

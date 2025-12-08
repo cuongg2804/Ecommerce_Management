@@ -6,11 +6,23 @@ import * as controller from "../../controller/admin/article.controller";
 import * as validates from "../../validates/admin/article.validate";
 
 
+// [GET] /admin/article/list
+router.get("/list",controller.articleList);
+
 // [GET] /admin/article/create
 router.get("/create",controller.articleCreate);
 
 // [POST] /admin/article/create
 router.post("/create",upload.none(), validates.validatesArticle,controller.articleCreatePost);
+
+// [GET] /admin/article/edit/:id
+router.get("/edit/:id",controller.articleEdit);
+
+// [PATCH] /admin/article/edit/id
+router.patch("/edit/:id",upload.none(), validates.validatesArticle,controller.articleEditPatch);
+
+// [DELETE] /admin/article/delete/:id
+router.delete("/delete/:id",controller.articleDelete);
 
 // [GET] /admin/article/category
 router.get("/category",controller.category);

@@ -17,4 +17,6 @@ router.patch("/change-file-name", upload.none(), controller.changeFileName);
 //  [PATCH] /admin/file/delete-file-name/:id
 router.patch("/delete-file/:id", upload.none(), controller.deleteFile);
 
+// PATCH /admin/role/delete/:id
+
 export default router;

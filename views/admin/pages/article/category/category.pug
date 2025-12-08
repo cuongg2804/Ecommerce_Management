@@ -1,5 +1,6 @@
 extends ../../../layouts/default.pug
 include ../../../mixin/pagination.pug
+include ../../../mixin/form-search.pug
 block main
     .row
         .col-12
@@ -30,13 +31,7 @@ block main
                 .card-body.pt-0
                     .row
                         .col-lg-6
-                            form.input-group.mb-3(form-search)
-                                input.form-control(
-                                placeholder="Từ khóa..."
-                                type="text"
-                                name="keyword"
-                                )
-                                button.btn.btn-secondary Tìm kiếm
+                            +form-search()
                     .table-responsive-sm
                         table.table.mb-0.table-centered.text-center
                             thead.table-light

@@ -5,7 +5,48 @@ import { categoryBlogTree } from "../../helpers/category.helper";
 import slugify from "slugify";
 import { date } from "joi";
 import { PaginationHelper } from "../../helpers/pagination.helper";
+import { prefixAdmin } from "../../config/systemConfig";
+import { blob } from "stream/consumers";
 
+
+// [GET] /admin/article/list
+export const articleList = async (req : Request, res: Response) => {
+    const find : {
+        deleted: boolean,
+        search?: RegExp
+    } =  ({
+        deleted: false
+    })
+
+    if(req.query.keyword){
+        const keyword = slugify(`${req.query.keyword}`,{
+            lower: true,
+            replacement: " "
+        })
+        const keywordRegex = new RegExp(keyword,"i");
+
+        find.search = keywordRegex;
+    }
+
+    //Pagination
+    const totalRecord = await Blog.countDocuments(find);
+    const pagination = PaginationHelper(req, totalRecord,2);
+    //Pagination
+
+    const articleList = await Blog
+                                .find(find)
+                                .limit(pagination.limit)
+                                .skip(pagination.skip ?? 0)                     
+                                .sort({
+                                    createdAt: "desc"
+                                })
+
+    res.render("admin/pages/article/list",{
+        pageTitle: "Danh sách bài viết",
+        articleList : articleList,
+        pagination: pagination
+    });
+}
 // [GET] /admin/article/create
 export const articleCreate = async (req : Request, res: Response) => {
 
@@ -57,6 +98,119 @@ export const articleCreatePost = async (req : Request, res: Response) => {
         })
     }
 }
+
+// [GET] /admin/article/edit/:id
+export const articleEdit = async (req : Request, res: Response) => {
+    try {
+        
+        const categoryList = await CategoryBlog.find({});
+        const categoryTree = categoryBlogTree(categoryList);
+
+        const articleDetail = await Blog.findOne({
+            _id : req.params.id,
+            deleted: false
+        })
+
+        if(!articleDetail){
+            res.redirect(`${prefixAdmin}/article/list`)
+            return;
+        }
+        
+        res.render("admin/pages/article/article-edit",{
+            pageTitle: "Chỉnh sửa bài viết",
+            categoryList: categoryTree,
+            articleDetail: articleDetail
+        })
+        
+    } catch (error) {
+        res.redirect(`${prefixAdmin}/article/list`);
+    }
+}
+
+// [PATCH] /admin/article/edit/id
+export const articleEditPatch = async (req : Request, res: Response) => {
+    try {
+        const id = req.params.id;
+        const articleDetail = await Blog.findOne({
+            _id: id,
+            deleted: false
+        })
+
+        if(!articleCreate){
+            res.json({
+                code: "error",
+                message: "Bài viết không tồn tại"
+            })
+            return;
+        }
+
+        const existSlug = await Blog.findOne({
+            _id: { $ne: id},
+            slug : req.body.slug
+        })
+
+        if(existSlug){
+            res.json({
+                code: "error",
+                message: "Đường dẫn đã tồn tại!"
+            })
+            return;
+        }
+
+        req.body.category = JSON.parse(req.body.category);
+
+        req.body.search = slugify(`${req.body.name}`, {
+            replacement: " ",
+            lower: true
+        });
+
+        if(req.body.status == "published"){
+            req.body.updateAt = new Date();
+        }
+
+        await Blog.updateOne({
+            _id : id,
+            deleted: false
+        }, req.body)
+
+        res.json({
+            code: "success",
+            message: "Cập nhật bài viết thành công!"
+        })
+        res.redirect(`${prefixAdmin}/article/list`)
+
+    } catch (error) {
+        res.json({
+            code: "error",
+            message: "Bài viết không tồn tại"
+        })
+        return;
+    }
+}
+
+// [DELETE] /admin/article/delete/:id
+export const articleDelete = async (req : Request, res: Response) => {
+    try {
+        await Blog.updateOne({
+            _id: req.params.id
+        },{
+            deleted: true,
+            deleteAt: Date.now()
+        })
+        res.json({
+            code: "success",
+            message: "Xóa bài viết thành công!"
+        })
+        return;
+    } catch (error) {
+        res.json({
+            code: "error",
+            message: "Xóa bài viết không thành công!"
+        })
+        return;
+    }
+}
+
 // [GET] /admin/article/category
 export const category = async (req : Request, res: Response) => {
     const find : {
